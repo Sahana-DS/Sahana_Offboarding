@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./Frontend
+    ports:
+      - "6556:80"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+  hr_page:
+    build: ./Hr_page
+    ports:
+      - "6557:80"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+  backend:
+    build: ./Backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - app_network
+    environment:
+      - PG_HOST=postgres
+      - PG_USER=postgres
+      - PG_PASSWORD=admin123
+      - PG_DATABASE=new_employee_db
+      - PG_PORT=5432
+
+  postgres:
+    image: postgres:13
+    ports:
+      - "5117:5432"
+    networks:
+      - app_network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin234
+      POSTGRES_DB: new_employee_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+networks:
+  app_network:
+
+volumes:
+  pgdata:
+
